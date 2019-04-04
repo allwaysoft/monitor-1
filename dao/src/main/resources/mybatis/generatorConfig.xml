@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <classPathEntry
+            location="E:/repertory/maven/mysql/mysql-connector-java/8.0.15/mysql-connector-java-8.0.15.jar"/>
+
+    <context id="my" targetRuntime="MyBatis3">
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+
+        <!-- 自定义注释生成器 -->
+        <commentGenerator type="com.dennis.dao.mybatis.MyCommentGenerator">
+            <!--<property name="suppressDate" value="false"/>-->
+            <!--<property name="suppressAllComments" value="true"/>-->
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/db_monitor?nullCatalogMeansCurrent=true" userId="root"
+                        password="123456"/>
+
+        <!-- 自定义 类型转换器 -->
+        <javaTypeResolver type="com.dennis.dao.mybatis.MyJavaTypeResolver">
+            <property name="forceBigDecimals" value="false"></property>
+        </javaTypeResolver>
+
+
+        <!-- 指定生成 entity 位置 -->
+        <javaModelGenerator targetPackage="com.dennis.dao.entity"
+                            targetProject="dao\src\main\java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!-- 指定生成 mapper 位置 -->
+        <sqlMapGenerator targetPackage="com.dennis.dao.mapper"
+                         targetProject="dao\src\main\java">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <!-- 指定生成 repository 位置 -->
+        <javaClientGenerator targetPackage="com.dennis.dao.repository"
+                             targetProject="dao\src\main\java"
+                             type="XMLMAPPER">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!-- **************************  对应关系  **************************** -->
+
+        <!--<table tableName="t_app" domainObjectName="App"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+        <!--</table>-->
+
+        <!--<table tableName="t_email_record" domainObjectName="EmailRecord"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+        <!--</table>-->
+
+        <!--<table tableName="t_message" domainObjectName="Message"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+        <!--</table>-->
+
+        <!--<table tableName="t_msg_read" domainObjectName="MsgRead"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+        <!--</table>-->
+
+        <!--<table tableName="t_server" domainObjectName="Server"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+        <!--</table>-->
+
+        <!--<table tableName="t_user" domainObjectName="User"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--selectByExampleQueryId="false">-->
+        <!--</table>-->
+
+        <table tableName=""/>
+    </context>
+</generatorConfiguration>

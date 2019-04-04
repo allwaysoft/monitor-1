@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dennis.dao.repository.AppMapper">
+  <resultMap id="BaseResultMap" type="com.dennis.dao.entity.App">
+    <id column="pk_id" jdbcType="INTEGER" property="pkId" />
+    <result column="server_id" jdbcType="INTEGER" property="serverId" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="regex" jdbcType="VARCHAR" property="regex" />
+    <result column="is_monitor" jdbcType="TINYINT" property="isMonitor" />
+    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pk_id, server_id, nickname, path, regex, is_monitor, is_delete, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_app
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_app
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dennis.dao.entity.App">
+    insert into t_app (pk_id, server_id, nickname, 
+      path, regex, is_monitor, 
+      is_delete, create_time)
+    values (#{pkId,jdbcType=INTEGER}, #{serverId,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, 
+      #{path,jdbcType=VARCHAR}, #{regex,jdbcType=VARCHAR}, #{isMonitor,jdbcType=TINYINT}, 
+      #{isDelete,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dennis.dao.entity.App">
+    insert into t_app
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pkId != null">
+        pk_id,
+      </if>
+      <if test="serverId != null">
+        server_id,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="regex != null">
+        regex,
+      </if>
+      <if test="isMonitor != null">
+        is_monitor,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pkId != null">
+        #{pkId,jdbcType=INTEGER},
+      </if>
+      <if test="serverId != null">
+        #{serverId,jdbcType=INTEGER},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="regex != null">
+        #{regex,jdbcType=VARCHAR},
+      </if>
+      <if test="isMonitor != null">
+        #{isMonitor,jdbcType=TINYINT},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dennis.dao.entity.App">
+    update t_app
+    <set>
+      <if test="serverId != null">
+        server_id = #{serverId,jdbcType=INTEGER},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="regex != null">
+        regex = #{regex,jdbcType=VARCHAR},
+      </if>
+      <if test="isMonitor != null">
+        is_monitor = #{isMonitor,jdbcType=TINYINT},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dennis.dao.entity.App">
+    update t_app
+    set server_id = #{serverId,jdbcType=INTEGER},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      regex = #{regex,jdbcType=VARCHAR},
+      is_monitor = #{isMonitor,jdbcType=TINYINT},
+      is_delete = #{isDelete,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where pk_id = #{pkId,jdbcType=INTEGER}
+  </update>
+</mapper>

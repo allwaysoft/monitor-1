@@ -1,0 +1,39 @@
+# 项目服务器配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.106.33.241:3306/db_monitor?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456
+    initialSize: 1
+    minIdle: 5
+    maxActive: 100
+    maxWait: 60000
+    testWhileIdle: true
+    testOnReturn: false
+    testOnBorrow: false
+    validationQuery: SELECT 1
+    removeAbandoned: true
+    removeAbandonedTimeout: 1800
+    logAbandoned: true
+    filters: mergeStat
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 25200000
+
+    redis:
+      host: 47.106.33.241
+      password:
+      jedis:
+        pool:
+          min-idle: 0
+          max-idle: 20
+          #            max-wait: 5000
+          max-active: 100
+
+
+
+
+
+
+
+

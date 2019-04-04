@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: api
+
+  profiles:
+    active: dev
+
+  # 返回客户端时间格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm
+    time-zone: GMT+8
+
+
+server:
+  port: 8080
+
+logging:
+  config: classpath:log/logback-spring.xml
+
+
+# Mybatis 配置
+mybatis:
+  mapper-locations: classpath*:com/dennis/dao/mapper/*Mapper.xml
+  type-aliases-package: com.wky.dennis.domain
+
+  # Mybatis Map 字段为空不返回
+  configuration:
+    call-setters-on-nulls: true

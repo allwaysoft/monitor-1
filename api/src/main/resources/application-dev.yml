@@ -1,0 +1,42 @@
+# 项目服务器配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_monitor?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: 123456
+    initialSize: 1
+    minIdle: 5
+    maxActive: 100
+    maxWait: 60000
+    testWhileIdle: true
+    testOnReturn: false
+    testOnBorrow: false
+    validationQuery: SELECT 1
+    removeAbandoned: true
+    removeAbandonedTimeout: 1800
+    logAbandoned: true
+    filters: mergeStat
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 25200000
+
+
+  kafka:
+    bootstrap-servers: 47.101.202.233:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: ssh
+      enable-auto-commit: true
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  redis:
+    host: 127.0.0.1
+    password:
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 20
+        max-active: 100
