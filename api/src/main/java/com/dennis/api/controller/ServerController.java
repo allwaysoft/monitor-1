@@ -6,7 +6,6 @@ import com.dennis.common.enums.ResultEnum;
 import com.dennis.common.result.Result;
 import com.dennis.common.result.ResultUtil;
 import com.dennis.common.tools.MapUtil;
-import com.dennis.dao.repository.ServerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,23 +55,14 @@ public class ServerController {
 
 
     @Authorization
-    @RequestMapping(value = "/deployState.action", method = RequestMethod.POST)
-    public Result deployState(@RequestParam(value = "serverId") Integer serverId) {
+    @RequestMapping(value = "/deploy.action", method = RequestMethod.POST)
+    public Result deploy(@RequestParam Map params) {
 
-        if (serverId != null && serverId > 0)
-            return serverService.deployState(serverId);
-
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
-    }
-
-
-    @Authorization
-    @RequestMapping(value = "/deployFlume.action", method = RequestMethod.POST)
-    public Result deployFlume(@RequestParam(value = "serverId") Integer serverId) {
-
-        if (serverId != null && serverId > 0)
-            return serverService.deployFlume(serverId);
-
+        if (MapUtil.containsKeys(params, "host", "username", "password", "port")) {
+            if (MapUtil.isNotEmptyStringValues(params, "host", "username", "password", "port")) {
+                return serverService.deploy(params);
+            }
+        }
         return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
     }
 
@@ -88,9 +78,26 @@ public class ServerController {
 
 
     @Authorization
+    @RequestMapping(value = "/ls.action", method = RequestMethod.POST)
+    public Result ls(@RequestParam Map params) {
+
+        if (MapUtil.containsKeys(params, "serverId", "path"))
+            if (MapUtil.isNotEmptyStringValues(params, "serverId", "path"))
+                return serverService.ls(params);
+
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+    }
+
+    @Authorization
     @RequestMapping(value = "/list.action", method = RequestMethod.POST)
-    public Result list() {
-        return serverService.list();
+    public Result list(@RequestParam Map params) {
+        if (MapUtil.containsKeys(params, "pageNum","pageSize")){
+            if (MapUtil.isNotEmptyStringValues(params, "pageNum","pageSize")){
+                MapUtil.pageFormat(params);
+                return serverService.list(params);
+            }
+        }
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
     }
 
 

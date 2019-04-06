@@ -34,6 +34,11 @@ public class Server {
     private String port;
 
     /**
+     * 部署路径 deploy_path
+     */
+    private String deployPath;
+
+    /**
      * 名称 nickname
      */
     private String nickname;
@@ -172,6 +177,24 @@ public class Server {
     }
 
     /**
+     * 部署路径
+     * @author Dennis
+     * @return deploy_path 部署路径
+     */
+    public String getDeployPath() {
+        return deployPath;
+    }
+
+    /**
+     * 部署路径
+     * @author Dennis
+     * @param deployPath 部署路径
+     */
+    public void setDeployPath(String deployPath) {
+        this.deployPath = deployPath == null ? null : deployPath.trim();
+    }
+
+    /**
      * 名称
      * @author Dennis
      * @return nickname 名称
@@ -281,7 +304,7 @@ public class Server {
 
     /**
      *
-     * @mbg.generated 2019-04-03 20:30:22
+     * @mbg.generated 2019-04-06 16:07:35
      */
     @Override
     public String toString() {
@@ -295,6 +318,7 @@ public class Server {
         sb.append(", username=").append(username);
         sb.append(", password=").append(password);
         sb.append(", port=").append(port);
+        sb.append(", deployPath=").append(deployPath);
         sb.append(", nickname=").append(nickname);
         sb.append(", lastLogin=").append(lastLogin);
         sb.append(", isDeploy=").append(isDeploy);

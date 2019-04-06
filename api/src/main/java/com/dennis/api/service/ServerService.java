@@ -16,11 +16,11 @@ public interface ServerService {
 
     Result status(Integer serverId);
 
-    Result deployState(Integer serverId);
+    Result deploy(Map params);
 
-    Result deployFlume(Integer serverId);
+    Result ls(Map params);
 
-    Result list();
+    Result list(Map params);
 
     Result delete(Integer serverId);
 

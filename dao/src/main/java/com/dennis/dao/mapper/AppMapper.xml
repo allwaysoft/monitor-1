@@ -125,4 +125,22 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>
+
+
+  <!-- ********************* -->
+
+  <select id="selectByServerId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select *
+    from t_app where is_delete=0 and server_id=#{serverId}
+    <if test="pageNum != null and pageSize != null">
+      limit #{pageNum},#{pageSize}
+    </if>
+  </select>
+
+  <select id="selectByServerCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select count(*)
+    from t_app where is_delete=0 and server_id=#{serverId}
+  </select>
+
+
 </mapper>

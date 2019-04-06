@@ -2,6 +2,9 @@ package com.dennis.dao.repository;
 
 import com.dennis.dao.entity.App;
 
+import java.util.List;
+import java.util.Map;
+
 public interface AppMapper {
     /**
      *
@@ -38,4 +41,10 @@ public interface AppMapper {
      * @mbg.generated 2019-03-31 17:25:47
      */
     int updateByPrimaryKey(App record);
+
+    /***************** 自定义 *******************/
+
+    List<App> selectByServerId(Map params);
+
+    Integer selectByServerCount(Map params);
 }

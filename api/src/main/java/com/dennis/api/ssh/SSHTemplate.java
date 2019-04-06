@@ -4,8 +4,10 @@ import com.dennis.common.constants.CommandConstant;
 import com.dennis.common.tools.MapUtil;
 import com.dennis.dao.entity.Server;
 import com.jcraft.jsch.*;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.*;
+import java.text.NumberFormat;
 import java.util.*;
 
 /**
@@ -72,6 +74,7 @@ public class SSHTemplate {
     }
 
 
+
     public static boolean testConnect(Map params) {
         JSch jSch = new JSch();
         Session session = null;
@@ -126,7 +129,8 @@ public class SSHTemplate {
                     int i = in.read(tmp, 0, 1024);
                     if (i < 0)
                         break;
-                    System.out.println(new String(tmp, 0, i));
+                    String str = new String(tmp, 0, i);
+                    builder.append(str).append(LINE_SEPARATOR);
                 }
                 if (exec.isClosed()) {
                     if (in.available() > 0)
@@ -144,6 +148,53 @@ public class SSHTemplate {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * 执行命令
+     *
+     * @param server
+     * @param command
+     * @return
+     */
+    public static void execWait(Server server, String command) {
+
+        Session session = getSession(server);
+
+        ChannelExec exec = null;
+        StringBuilder builder = new StringBuilder();
+
+        try {
+
+            exec = (ChannelExec) session.openChannel("exec");
+            InputStream in = exec.getInputStream();
+            exec.setCommand(command);
+            exec.connect();
+
+            byte[] tmp = new byte[1024];
+            while (true) {
+
+                while (in.available() > 0) {
+                    int i = in.read(tmp, 0, 1024);
+                    if (i < 0)
+                        break;
+                    String str = new String(tmp, 0, i);
+                    System.out.println(str);
+                }
+                if (exec.isClosed()) {
+                    if (in.available() > 0)
+                        continue;
+                    break;
+                }
+            }
+
+        } catch (JSchException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            close(session,exec);
+        }
     }
 
 
@@ -207,16 +258,21 @@ public class SSHTemplate {
      * @param remotePath
      * @return
      */
-    public static boolean upload(Server server, String localFile, String remotePath) {
+    public static boolean upload(Server server, String localFile, String remotePath, String fileName) {
 
         Session session = getSession(server);
         ChannelSftp channelSftp = null;
         try {
             channelSftp = openChannelSftp(session);
 
-            channelSftp.put(localFile, remotePath);
-            // +x 加执行权限
-            channelSftp.chmod(421, remotePath + "/speedtest-cli");
+            if (!isExist(channelSftp))
+                channelSftp.mkdir(remotePath);
+
+            channelSftp.put(localFile, remotePath,ChannelSftp.OVERWRITE);
+
+            if (fileName != null)
+                channelSftp.chmod(777, remotePath + fileName);
+
 
         } catch (JSchException | SftpException e) {
             e.printStackTrace();
@@ -256,30 +312,18 @@ public class SSHTemplate {
 
 
 
+    private static boolean isExist(ChannelSftp sftp){
 
-
-    public static void main(String[] args) {
-
-        Server server = new Server();
-        server.setUsername("jenkins");
-        server.setHost("47.106.33.241");
-        server.setPassword("dxs123456");
-        server.setPort("22");
-
-        List<String> commands = new ArrayList<>();
-        commands.add(CommandConstant.IOSTAT_CPU_COMMAND);
-        commands.add(CommandConstant.FREE_MEMORY_COMMAND);
-        commands.add(CommandConstant.DISK_DF_COMMAND);
-
-        String local = System.getProperty("user.dir").concat("/api/src/main/resources/ssh/speedtest-cli");
-        String remote = "/home/jenkins";
-
-
-        Vector vector = listFiles(server,"/home/jenkins");
-
-        vector.forEach(item -> System.out.println(item));
-
+        try {
+            Vector<ChannelSftp.LsEntry> vector = sftp.ls("/opt");
+            for (ChannelSftp.LsEntry it : vector){
+                if (CommandConstant.MONITOR.equals(it.getFilename()))
+                    return true;
+            }
+        } catch (SftpException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
-
 
 }
