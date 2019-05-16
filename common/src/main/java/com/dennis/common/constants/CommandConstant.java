@@ -22,14 +22,19 @@ public class CommandConstant {
     public static final String FLUME = "apache-flume-1.9.0-bin.tar.gz";
 
 
-
-
+    /**
+     * 获取 启动时间
+     */
+    public static final String          RUN_DATE = "who -b | tr -d [a-zA-Z]";
 
 
     /**
      * 查看 CPU 使用率
      */
-    public final static String IOSTAT_CPU_COMMAND = "iostat -c | sed '/^$/d' | tail -1 | awk -F ' ' '{print $1}'";
+    public final static String          IOSTAT_CPU_COMMAND = "iostat -c | sed '/^$/d' | tail -1 | awk -F ' ' '{print $1}'";
+
+
+    public final static String CPU_CORE_COMMAND = "cat /proc/cpuinfo| grep \"processor\"| wc -l";
 
     /**
      * 查看 内存 使用状态

@@ -1,216 +1,244 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dennis.dao.repository.ServerMapper">
-  <resultMap id="BaseResultMap" type="com.dennis.dao.entity.Server">
-    <id column="pk_id" jdbcType="INTEGER" property="pkId" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="host" jdbcType="VARCHAR" property="host" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="port" jdbcType="VARCHAR" property="port" />
-    <result column="deploy_path" jdbcType="VARCHAR" property="deployPath" />
-    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
-    <result column="last_login" jdbcType="TIMESTAMP" property="lastLogin" />
-    <result column="is_deploy" jdbcType="TINYINT" property="isDeploy" />
-    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    pk_id, user_id, host, username, password, port, deploy_path, nickname, last_login, 
-    is_deploy, is_delete, create_time, update_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_server
-    where pk_id = #{pkId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_server
-    where pk_id = #{pkId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.dennis.dao.entity.Server">
-    insert into t_server (pk_id, user_id, host, 
-      username, password, port, 
-      deploy_path, nickname, last_login, 
-      is_deploy, is_delete, create_time, 
-      update_time)
-    values (#{pkId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{host,jdbcType=VARCHAR}, 
-      #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{port,jdbcType=VARCHAR}, 
-      #{deployPath,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{lastLogin,jdbcType=TIMESTAMP}, 
-      #{isDeploy,jdbcType=TINYINT}, #{isDelete,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" parameterType="com.dennis.dao.entity.Server">
-    insert into t_server
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="pkId != null">
-        pk_id,
-      </if>
-      <if test="userId != null">
+    <resultMap id="BaseResultMap" type="com.dennis.dao.entity.Server">
+        <id column="pk_id" jdbcType="INTEGER" property="pkId"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="host" jdbcType="VARCHAR" property="host"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="port" jdbcType="VARCHAR" property="port"/>
+        <result column="deploy_path" jdbcType="VARCHAR" property="deployPath"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="last_login" jdbcType="TIMESTAMP" property="lastLogin"/>
+        <result column="is_deploy" jdbcType="TINYINT" property="isDeploy"/>
+        <result column="is_delete" jdbcType="TINYINT" property="isDelete"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        pk_id
+        ,
         user_id,
-      </if>
-      <if test="host != null">
         host,
-      </if>
-      <if test="username != null">
         username,
-      </if>
-      <if test="password != null">
         password,
-      </if>
-      <if test="port != null">
         port,
-      </if>
-      <if test="deployPath != null">
         deploy_path,
-      </if>
-      <if test="nickname != null">
         nickname,
-      </if>
-      <if test="lastLogin != null">
         last_login,
-      </if>
-      <if test="isDeploy != null">
         is_deploy,
-      </if>
-      <if test="isDelete != null">
         is_delete,
-      </if>
-      <if test="createTime != null">
         create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="pkId != null">
-        #{pkId,jdbcType=INTEGER},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="host != null">
-        #{host,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="port != null">
-        #{port,jdbcType=VARCHAR},
-      </if>
-      <if test="deployPath != null">
-        #{deployPath,jdbcType=VARCHAR},
-      </if>
-      <if test="nickname != null">
-        #{nickname,jdbcType=VARCHAR},
-      </if>
-      <if test="lastLogin != null">
-        #{lastLogin,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isDeploy != null">
-        #{isDeploy,jdbcType=TINYINT},
-      </if>
-      <if test="isDelete != null">
-        #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dennis.dao.entity.Server">
-    update t_server
-    <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="host != null">
-        host = #{host,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null">
-        username = #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="port != null">
-        port = #{port,jdbcType=VARCHAR},
-      </if>
-      <if test="deployPath != null">
-        deploy_path = #{deployPath,jdbcType=VARCHAR},
-      </if>
-      <if test="nickname != null">
-        nickname = #{nickname,jdbcType=VARCHAR},
-      </if>
-      <if test="lastLogin != null">
-        last_login = #{lastLogin,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isDeploy != null">
-        is_deploy = #{isDeploy,jdbcType=TINYINT},
-      </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where pk_id = #{pkId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.dennis.dao.entity.Server">
-    update t_server
-    set user_id = #{userId,jdbcType=INTEGER},
-      host = #{host,jdbcType=VARCHAR},
-      username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      port = #{port,jdbcType=VARCHAR},
-      deploy_path = #{deployPath,jdbcType=VARCHAR},
-      nickname = #{nickname,jdbcType=VARCHAR},
-      last_login = #{lastLogin,jdbcType=TIMESTAMP},
-      is_deploy = #{isDeploy,jdbcType=TINYINT},
-      is_delete = #{isDelete,jdbcType=TINYINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where pk_id = #{pkId,jdbcType=INTEGER}
-  </update>
+        update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_server
+        where pk_id = #{pkId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from t_server
+        where pk_id = #{pkId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.dennis.dao.entity.Server">
+        insert into t_server (pk_id, user_id, host,
+                              username, password, port,
+                              deploy_path, nickname, last_login,
+                              is_deploy, is_delete, create_time,
+                              update_time)
+        values (#{pkId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{host,jdbcType=VARCHAR},
+                #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{port,jdbcType=VARCHAR},
+                #{deployPath,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{lastLogin,jdbcType=TIMESTAMP},
+                #{isDeploy,jdbcType=TINYINT}, #{isDelete,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.dennis.dao.entity.Server">
+        insert into t_server
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkId != null">
+                pk_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="host != null">
+                host,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="port != null">
+                port,
+            </if>
+            <if test="deployPath != null">
+                deploy_path,
+            </if>
+            <if test="nickname != null">
+                nickname,
+            </if>
+            <if test="lastLogin != null">
+                last_login,
+            </if>
+            <if test="isDeploy != null">
+                is_deploy,
+            </if>
+            <if test="isDelete != null">
+                is_delete,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkId != null">
+                #{pkId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="host != null">
+                #{host,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="port != null">
+                #{port,jdbcType=VARCHAR},
+            </if>
+            <if test="deployPath != null">
+                #{deployPath,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                #{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLogin != null">
+                #{lastLogin,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeploy != null">
+                #{isDeploy,jdbcType=TINYINT},
+            </if>
+            <if test="isDelete != null">
+                #{isDelete,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.dennis.dao.entity.Server">
+        update t_server
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="host != null">
+                host = #{host,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="port != null">
+                port = #{port,jdbcType=VARCHAR},
+            </if>
+            <if test="deployPath != null">
+                deploy_path = #{deployPath,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLogin != null">
+                last_login = #{lastLogin,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeploy != null">
+                is_deploy = #{isDeploy,jdbcType=TINYINT},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where pk_id = #{pkId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.dennis.dao.entity.Server">
+        update t_server
+        set user_id     = #{userId,jdbcType=INTEGER},
+            host        = #{host,jdbcType=VARCHAR},
+            username    = #{username,jdbcType=VARCHAR},
+            password    = #{password,jdbcType=VARCHAR},
+            port        = #{port,jdbcType=VARCHAR},
+            deploy_path = #{deployPath,jdbcType=VARCHAR},
+            nickname    = #{nickname,jdbcType=VARCHAR},
+            last_login  = #{lastLogin,jdbcType=TIMESTAMP},
+            is_deploy   = #{isDeploy,jdbcType=TINYINT},
+            is_delete   = #{isDelete,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where pk_id = #{pkId,jdbcType=INTEGER}
+    </update>
 
-  <!-- ******************** 自定义 ********************* -->
+    <!-- ******************** 自定义 ********************* -->
 
-  <resultMap id="UserMap" type="java.util.HashMap">
-    <id column="pk_id" jdbcType="INTEGER" property="pkId" />
-    <result column="host" jdbcType="VARCHAR" property="host" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="port" jdbcType="VARCHAR" property="port" />
-    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-  </resultMap>
+    <resultMap id="UserMap" type="java.util.HashMap">
+        <id column="pk_id" jdbcType="INTEGER" property="pkId"/>
+        <result column="host" jdbcType="VARCHAR" property="host"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="port" jdbcType="VARCHAR" property="port"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
 
 
-  <select id="selectByUserId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select pk_id as pkId,host,username,port,nickname,nickname,create_time from t_server where is_delete = 0 and user_id = #{userId}
-    <if test="pageNum != null and pageSize != null">
-      limit #{pageNum},#{pageSize}
-    </if>
-  </select>
+    <select id="selectByUserId" parameterType="java.util.HashMap" resultMap="UserMap">
+        select pk_id,host,password,username,port,nickname,nickname,create_time from t_server
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="keyword != null and keyword != ''">
+                and nickname like CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="userId != null">
+                and is_delete = 0 and user_id = #{userId}
+            </if>
+        </trim>
 
-  <select id="selectByUserCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
-    select count(*) from t_server where is_delete=0 and user_id=#{userId}
-  </select>
+        <if test="pageNum != null and pageSize != null">
+            limit #{pageNum},#{pageSize}
+        </if>
+    </select>
 
-  <select id="selectByHost" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select *
-    from t_server where is_delete=0 and host=#{host}
-  </select>
+    <select id="selectByUserCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select count(*)
+        from t_server
+        where is_delete = 0
+          and user_id = #{userId}
+    </select>
+
+    <select id="selectByHost" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select *
+        from t_server
+        where is_delete = 0
+          and host = #{host}
+    </select>
 </mapper>

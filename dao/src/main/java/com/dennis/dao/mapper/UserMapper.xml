@@ -9,6 +9,7 @@
     <result column="avatar" jdbcType="VARCHAR" property="avatar" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="is_email" jdbcType="TINYINT" property="isEmail" />
     <result column="is_enable" jdbcType="TINYINT" property="isEnable" />
     <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
     <result column="last_login" jdbcType="TIMESTAMP" property="lastLogin" />
@@ -16,8 +17,8 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_id, account, password, salt, avatar, nickname, email, is_enable, is_delete, last_login, 
-    create_time, update_time
+    pk_id, account, password, salt, avatar, nickname, email, is_email, is_enable, is_delete, 
+    last_login, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -32,14 +33,14 @@
   <insert id="insert" parameterType="com.dennis.dao.entity.User">
     insert into t_user (pk_id, account, password, 
       salt, avatar, nickname, 
-      email, is_enable, is_delete, 
-      last_login, create_time, update_time
-      )
+      email, is_email, is_enable, 
+      is_delete, last_login, create_time, 
+      update_time)
     values (#{pkId,jdbcType=INTEGER}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{salt,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{isEnable,jdbcType=TINYINT}, #{isDelete,jdbcType=TINYINT}, 
-      #{lastLogin,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{email,jdbcType=VARCHAR}, #{isEmail,jdbcType=TINYINT}, #{isEnable,jdbcType=TINYINT}, 
+      #{isDelete,jdbcType=TINYINT}, #{lastLogin,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.dennis.dao.entity.User">
     insert into t_user
@@ -64,6 +65,9 @@
       </if>
       <if test="email != null">
         email,
+      </if>
+      <if test="isEmail != null">
+        is_email,
       </if>
       <if test="isEnable != null">
         is_enable,
@@ -103,6 +107,9 @@
       <if test="email != null">
         #{email,jdbcType=VARCHAR},
       </if>
+      <if test="isEmail != null">
+        #{isEmail,jdbcType=TINYINT},
+      </if>
       <if test="isEnable != null">
         #{isEnable,jdbcType=TINYINT},
       </if>
@@ -141,6 +148,9 @@
       <if test="email != null">
         email = #{email,jdbcType=VARCHAR},
       </if>
+      <if test="isEmail != null">
+        is_email = #{isEmail,jdbcType=TINYINT},
+      </if>
       <if test="isEnable != null">
         is_enable = #{isEnable,jdbcType=TINYINT},
       </if>
@@ -167,6 +177,7 @@
       avatar = #{avatar,jdbcType=VARCHAR},
       nickname = #{nickname,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
+      is_email = #{isEmail,jdbcType=TINYINT},
       is_enable = #{isEnable,jdbcType=TINYINT},
       is_delete = #{isDelete,jdbcType=TINYINT},
       last_login = #{lastLogin,jdbcType=TIMESTAMP},
@@ -174,6 +185,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>
+
 
   <!-- 自定义 -->
 

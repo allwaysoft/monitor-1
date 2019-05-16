@@ -12,6 +12,7 @@ import java.io.IOException;
 public interface CommonService {
 
 
+    Result closeWebSocket(Integer code);
 
     Result upload(MultipartFile file) throws IOException;
 

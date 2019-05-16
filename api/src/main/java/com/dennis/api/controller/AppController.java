@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * Created by Dennis on 2019/3/31.
+ * 应用日志
  */
 
 
@@ -28,53 +29,48 @@ public class AppController {
     private AppService appService;
 
     @Authorization
-    @RequestMapping(value = "/add.action", method = RequestMethod.POST)
-    public Result add(@RequestParam Map params) {
+    @RequestMapping(value = "/info.action", method = RequestMethod.POST)
+    public Result info(@RequestParam(value = "appId") Integer appId){
 
-        if (MapUtil.containsKeys(params, "serverId", "nickname", "path", "regex")) {
-            if (MapUtil.isNotEmptyStringValues(params, "serverId", "nickname", "path")) {
-                return appService.add(params);
-            }
+        if (appId != null && appId > 0){
+            return appService.info(appId);
         }
 
         return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+    }
+
+    @Authorization
+    @RequestMapping(value = "/edit.action", method = RequestMethod.POST)
+    public Result add(@RequestParam Map params) {
+
+        if (MapUtil.containsKeys(params, "serverId", "logName", "path")) {
+            if (MapUtil.isNotEmptyStringValues(params, "serverId", "logName", "path")) {
+                return appService.edit(params);
+            }
+        }
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
     @Authorization
     @RequestMapping(value = "/list.action", method = RequestMethod.POST)
     public Result list(@RequestParam Map params) {
 
-        if (MapUtil.containsKeys(params, "serverId", "pageNum", "pageSize")){
-            if (MapUtil.isNotEmptyStringValues(params, "serverId", "pageNum", "pageSize")) {
+        if (MapUtil.containsKeys(params, "pageNum", "pageSize")) {
+            if (MapUtil.isNotEmptyStringValues(params, "pageNum", "pageSize")) {
                 MapUtil.pageFormat(params);
                 return appService.list(params);
             }
         }
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
-    @Authorization
-    @RequestMapping(value = "/update.action", method = RequestMethod.POST)
-    public Result update(@RequestParam Map params) {
-
-        if (MapUtil.containsKeys(params, "appId")) {
-            if (MapUtil.isNotEmptyStringValues(params, "appId")) {
-                return appService.update(params);
-            }
-        }
-
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
-    }
 
     @Authorization
     @RequestMapping(value = "/delete.action", method = RequestMethod.POST)
     public Result delete(@RequestParam(value = "appId") Integer appId) {
-
-        if (appId != null && appId > 0) {
+        if (appId != null && appId > 0)
             return appService.delete(appId);
-        }
-
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
 
@@ -86,7 +82,7 @@ public class AppController {
             return appService.monitor(appId);
         }
 
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
 }

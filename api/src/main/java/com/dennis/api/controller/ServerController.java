@@ -29,15 +29,15 @@ public class ServerController {
 
 
     @Authorization
-    @RequestMapping(value = "/add.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/save.action", method = RequestMethod.POST)
     public Result add(@RequestParam Map params) {
 
         if (MapUtil.containsKeys(params, "host", "username", "password", "port", "nickname")) {
             if (MapUtil.isNotEmptyStringValues(params, "host", "username", "password", "port", "nickname")) {
-                return serverService.add(params);
+                return serverService.save(params);
             }
         }
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
 
@@ -50,7 +50,7 @@ public class ServerController {
                 return serverService.testConnect(params);
             }
         }
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
 
@@ -63,9 +63,18 @@ public class ServerController {
                 return serverService.deploy(params);
             }
         }
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
+    @Authorization
+    @RequestMapping(value = "/runInfo.action", method = RequestMethod.POST)
+    public Result date(@RequestParam Integer serverId){
+
+        if (serverId != null && serverId > 0){
+            return serverService.date(serverId);
+        }
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
+    }
 
     @Authorization
     @RequestMapping(value = "/status.action", method = RequestMethod.POST)
@@ -73,7 +82,7 @@ public class ServerController {
 
         if (serverId != null && serverId > 0)
             return serverService.status(serverId);
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
 
@@ -85,8 +94,9 @@ public class ServerController {
             if (MapUtil.isNotEmptyStringValues(params, "serverId", "path"))
                 return serverService.ls(params);
 
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
+
 
     @Authorization
     @RequestMapping(value = "/list.action", method = RequestMethod.POST)
@@ -97,9 +107,15 @@ public class ServerController {
                 return serverService.list(params);
             }
         }
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
+
+    @Authorization
+    @RequestMapping(value = "/selectList.action", method = RequestMethod.POST)
+    public Result selectList(){
+        return serverService.selectList();
+    }
 
     @Authorization
     @RequestMapping(value = "/delete.action", method = RequestMethod.POST)
@@ -109,22 +125,7 @@ public class ServerController {
             return serverService.delete(serverId);
         }
 
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
-
-
-    @Authorization
-    @RequestMapping(value = "/update.action", method = RequestMethod.POST)
-    public Result update(@RequestParam Map params) {
-
-        if (MapUtil.containsKeys(params, "serverId", "host", "username", "password", "port", "nickname")) {
-            if (MapUtil.isNotEmptyStringValues(params, "serverId", "host", "username", "password", "port", "nickname")) {
-                return serverService.update(params);
-            }
-        }
-
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
-    }
-
 
 }

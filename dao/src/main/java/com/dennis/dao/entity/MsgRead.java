@@ -1,5 +1,7 @@
 package com.dennis.dao.entity;
 
+import java.util.Date;
+
 public class MsgRead {
     /**
      * 主键 pk_id
@@ -15,6 +17,11 @@ public class MsgRead {
      * 消息ID msg_id
      */
     private Integer msgId;
+
+    /**
+     * 阅读时间 read_time
+     */
+    private Date readTime;
 
     /**
      * 主键
@@ -71,8 +78,26 @@ public class MsgRead {
     }
 
     /**
+     * 阅读时间
+     * @author Dennis
+     * @return read_time 阅读时间
+     */
+    public Date getReadTime() {
+        return readTime;
+    }
+
+    /**
+     * 阅读时间
+     * @author Dennis
+     * @param readTime 阅读时间
+     */
+    public void setReadTime(Date readTime) {
+        this.readTime = readTime;
+    }
+
+    /**
      *
-     * @mbg.generated 2019-03-31 17:25:47
+     * @mbg.generated 2019-05-16 00:00:59
      */
     @Override
     public String toString() {
@@ -83,6 +108,7 @@ public class MsgRead {
         sb.append(", pkId=").append(pkId);
         sb.append(", userId=").append(userId);
         sb.append(", msgId=").append(msgId);
+        sb.append(", readTime=").append(readTime);
         sb.append("]");
         return sb.toString();
     }

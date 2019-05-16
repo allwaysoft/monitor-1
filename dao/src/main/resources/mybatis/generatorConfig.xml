@@ -18,8 +18,14 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/db_monitor?nullCatalogMeansCurrent=true" userId="root"
-                        password="123456"/>
+                        connectionURL="jdbc:mysql://localhost:3306/db_monitor" userId="root"
+                        password="123456">
+            <!--MySQL 8.x 需要指定服务器的时区-->
+            <property name="serverTimezone" value="UTC"/>
+            <!--MySQL 不支持 schema 或者 catalog 所以需要添加这个-->
+            <!--参考 : http://www.mybatis.org/generator/usage/mysql.html-->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
 
         <!-- 自定义 类型转换器 -->
         <javaTypeResolver type="com.dennis.dao.mybatis.MyJavaTypeResolver">

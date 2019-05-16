@@ -17,9 +17,17 @@ public interface UserService {
 
     Result login(String account, String password);
 
-    Result loginForCode(String account, String code);
+    Result info();
+
+    Result noticeInfo();
+
+    Result updateNotice(Map params);
+
+    Result logout();
 
     Result updatePassword(String account, String code, String password);
 
-    Result updateAvatar(String avatar);
+    Result resetPassword(String oldPass, String newPass);
+
+    Result update(Map params);
 }

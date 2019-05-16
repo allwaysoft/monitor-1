@@ -1,11 +1,13 @@
 package com.dennis.api.service.impl;
 
 import com.dennis.api.service.CommonService;
+import com.dennis.api.websocket.WebSocket;
 import com.dennis.common.enums.ResultEnum;
 import com.dennis.common.result.Result;
 import com.dennis.common.result.ResultUtil;
 import com.dennis.common.tools.MapUtil;
 import com.dennis.common.tools.QiNiuYunUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +22,21 @@ import java.util.UUID;
 public class CommonServiceImpl implements CommonService {
 
 
+    @Autowired
+    private WebSocket webSocket;
+
+
+    @Override
+    public Result closeWebSocket(Integer code) {
+
+        if (webSocket.isExists(String.valueOf(code))){
+            webSocket.removeSession(String.valueOf(code));
+            webSocket.printSession();  // 打印 websocket 连接池
+            return ResultUtil.success(ResultEnum.REQUEST_SUCCESS);
+        }else {
+            return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
+        }
+    }
 
     @Override
     public Result upload(MultipartFile file) throws IOException {
@@ -37,7 +54,7 @@ public class CommonServiceImpl implements CommonService {
         String url = QiNiuYunUtil.uploadImg(file.getInputStream(), name);
 
         if (url == null)
-            return ResultUtil.error(ResultEnum.UPLOAD_FAIL.getMsg());
+            return ResultUtil.error(ResultEnum.UPLOAD_FAIL);
 
         return ResultUtil.success(ResultEnum.UPDATE_SUCCESS.getMsg(), MapUtil.resultMap("url","http://"+url));
 

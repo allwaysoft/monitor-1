@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
             // 注册
             User user = userMapper.selectByAccount(account);
             if (user != null)
-                return ResultUtil.error(ResultEnum.ACCOUNT_EXIST.getMsg());
+                return ResultUtil.error(ResultEnum.ACCOUNT_EXIST);
 
             // 发送验证码
             SMSUtils.sendSMSCode(account, code, type);
@@ -58,9 +58,9 @@ public class UserServiceImpl implements UserService {
             // 登录
             User user = userMapper.selectByAccount(account);
             if (user == null)
-                return ResultUtil.error(ResultEnum.USER_NOT_FOUND.getMsg());
+                return ResultUtil.error(ResultEnum.USER_NOT_FOUND);
             if (user.getIsEnable() == 1)
-                return ResultUtil.error(ResultEnum.USER_BAN.getMsg());
+                return ResultUtil.error(ResultEnum.USER_BAN);
 
             // 发送验证码
             SMSUtils.sendSMSCode(account, code, type);
@@ -68,12 +68,12 @@ public class UserServiceImpl implements UserService {
             // 忘记密码
             User user = userMapper.selectByAccount(account);
             if (user == null)
-                return ResultUtil.error(ResultEnum.USER_NOT_FOUND.getMsg());
+                return ResultUtil.error(ResultEnum.USER_NOT_FOUND);
 
             // 发送验证码
             SMSUtils.sendSMSCode(account, code, type);
         } else {
-            return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+            return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
         }
 
         // 持久化 Redis
@@ -91,12 +91,12 @@ public class UserServiceImpl implements UserService {
         // 验证码 校验
         String code = codeRedisDao.getUserCode(1, account);
         if (code == null || !code.equals(MapUtil.getString(params, "code")))
-            return ResultUtil.error(ResultEnum.VERIFICATION_CODE_ERROR.getMsg());
+            return ResultUtil.error(ResultEnum.VERIFICATION_CODE_ERROR);
 
         // 账号校验
         User checkUser = userMapper.selectByAccount(account);
         if (checkUser != null)
-            return ResultUtil.error(ResultEnum.ACCOUNT_EXIST.getMsg());
+            return ResultUtil.error(ResultEnum.ACCOUNT_EXIST);
 
         User user = new User();
         user.setAccount(account);
@@ -124,13 +124,13 @@ public class UserServiceImpl implements UserService {
 
         User checkUser = userMapper.selectByAccount(account);
         if (checkUser == null)
-            return ResultUtil.error(ResultEnum.USER_NOT_FOUND.getMsg());
+            return ResultUtil.error(ResultEnum.USER_NOT_FOUND);
 
         if (!checkUser.getPassword().equals(EncryptUtils.encrypt(password, checkUser.getSalt())))
-            return ResultUtil.error(ResultEnum.USER_PASSWORD_NOT_MATCH.getMsg());
+            return ResultUtil.error(ResultEnum.USER_PASSWORD_NOT_MATCH);
 
         if (checkUser.getIsEnable() == 1)
-            return ResultUtil.error(ResultEnum.USER_BAN.getMsg());
+            return ResultUtil.error(ResultEnum.USER_BAN);
 
         Map info = persistentRedis(checkUser);
 
@@ -138,29 +138,49 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result loginForCode(String account, String code) {
+    public Result info() {
 
-        // 获取 Redis 验证码
-        String checkCode = codeRedisDao.getUserCode(2, account);
+        User user = userMapper.selectByPrimaryKey(RequestUtils.getPkId());
+        Map result = new HashMap();
+        result.put("nickname", user.getNickname());
+        result.put("avatar", user.getAvatar());
+        result.put("account", user.getAccount());
 
-        // 账户校验
-        User checkUser = userMapper.selectByAccount(account);
-        if (checkUser == null)
-            return ResultUtil.error(ResultEnum.USER_NOT_FOUND.getMsg());
+        return ResultUtil.success(ResultEnum.REQUEST_SUCCESS.getMsg(), result);
+    }
 
-        // 验证码校验
-        if (!checkCode.equals(code))
-            return ResultUtil.error(ResultEnum.VERIFICATION_CODE_ERROR.getMsg());
+    @Override
+    public Result noticeInfo() {
+        User user = userMapper.selectByPrimaryKey(RequestUtils.getPkId());
+        Map result = new HashMap();
+        result.put("email", (user.getEmail() != null ? user.getEmail() : ""));
+        result.put("isEnableNotice", user.getIsEmail());
+        return ResultUtil.success(ResultEnum.REQUEST_SUCCESS.getMsg(), result);
+    }
 
-        // 状态校验
-        if (checkUser.getIsEnable() == 1)
-            return ResultUtil.error(ResultEnum.USER_BAN.getMsg());
+    @Override
+    public Result updateNotice(Map params) {
 
-        // 生成 token、持久化 Redis
-        Map map = persistentRedis(checkUser);
+        User user = userMapper.selectByPrimaryKey(RequestUtils.getPkId());
+        user.setIsEmail(MapUtil.getInt(params, "isNotice"));
+        user.setEmail(MapUtil.getString(params, "email"));
+        user.setUpdateTime(DateUtil.getCurrentDate());
 
-        return ResultUtil.success("登录成功", map);
+        userMapper.updateByPrimaryKeySelective(user);
 
+        return ResultUtil.success(ResultEnum.REQUEST_SUCCESS.getMsg());
+    }
+
+    @Override
+    public Result logout() {
+
+        Integer pkId = RequestUtils.getPkId();
+        User user = userMapper.selectByPrimaryKey(pkId);
+        if (user == null)
+            return ResultUtil.error(ResultEnum.REQUEST_FAIL);
+
+        tokenRedisDao.removeToken(String.valueOf(pkId));
+        return ResultUtil.success();
     }
 
     @Override
@@ -170,12 +190,12 @@ public class UserServiceImpl implements UserService {
         // 账户校验
         User check = userMapper.selectByAccount(account);
         if (check == null)
-            return ResultUtil.error(ResultEnum.USER_NOT_FOUND.getMsg());
+            return ResultUtil.error(ResultEnum.USER_NOT_FOUND);
 
         // 验证码校验
         String checkCode = codeRedisDao.getUserCode(3, account);
         if (!checkCode.equals(code))
-            return ResultUtil.error(ResultEnum.VERIFICATION_CODE_ERROR.getMsg());
+            return ResultUtil.error(ResultEnum.VERIFICATION_CODE_ERROR);
 
         // 修改密码
         String pass = EncryptUtils.encrypt(password, check.getSalt());
@@ -188,26 +208,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public Result updateAvatar(String avatar) {
+    public Result resetPassword(String oldPass, String newPass) {
 
         User user = userMapper.selectByPrimaryKey(RequestUtils.getPkId());
         if (user == null)
-            return ResultUtil.error(ResultEnum.USER_NOT_FOUND.getMsg());
+            return ResultUtil.error(ResultEnum.USER_NOT_FOUND);
 
-        user.setAvatar(avatar);
+        if (!user.getPassword().equals(EncryptUtils.encrypt(oldPass, user.getSalt())))
+            return ResultUtil.error(ResultEnum.CURRENT_PASSWORD_NOT_MATCH);
+
+        String pass = EncryptUtils.encrypt(newPass, user.getSalt());
+        user.setPassword(pass);
         user.setUpdateTime(DateUtil.getCurrentDate());
         userMapper.updateByPrimaryKeySelective(user);
 
-        // 更新客户端用户信息
-        Map info = userMapper.selectByLoginInfo(user.getAccount());
-
-        return ResultUtil.success(ResultEnum.UPDATE_SUCCESS.getMsg(), info);
+        return ResultUtil.success(ResultEnum.REQUEST_SUCCESS.getMsg());
     }
 
+    @Override
+    public Result update(Map params) {
+
+        Integer userId = RequestUtils.getPkId();
+        User user = userMapper.selectByPrimaryKey(userId);
+        if (user == null)
+            return ResultUtil.error(ResultEnum.USER_NOT_FOUND.getMsg());
+
+        if (params.containsKey("nickname")) {
+            user.setNickname(MapUtil.getString(params, "nickname"));
+        }
+
+        if (params.containsKey("avatar")) {
+            user.setAvatar(MapUtil.getString(params, "avatar"));
+        }
+
+        user.setUpdateTime(DateUtil.getCurrentDate());
+        userMapper.updateByPrimaryKeySelective(user);
+
+        Map userInfo = userMapper.selectByLoginInfo(user.getAccount());
+
+        return ResultUtil.success(ResultEnum.UPDATE_SUCCESS.getMsg(), userInfo);
+    }
 
     /**
      * 生成Token、持久化Redis
+     *
      * @param checkUser
      * @return
      */

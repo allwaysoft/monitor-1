@@ -8,12 +8,15 @@
     <result column="target" jdbcType="INTEGER" property="target" />
     <result column="sender" jdbcType="INTEGER" property="sender" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="is_cancel" jdbcType="TINYINT" property="isCancel" />
+    <result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.dennis.dao.entity.Message">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_id, title, type, target, sender, send_time
+    pk_id, title, type, target, sender, send_time, is_cancel, cancel_time, is_delete
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -33,9 +36,11 @@
   <insert id="insert" parameterType="com.dennis.dao.entity.Message">
     insert into t_message (pk_id, title, type, 
       target, sender, send_time, 
+      is_cancel, cancel_time, is_delete, 
       content)
     values (#{pkId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
       #{target,jdbcType=INTEGER}, #{sender,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP}, 
+      #{isCancel,jdbcType=TINYINT}, #{cancelTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=TINYINT}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.dennis.dao.entity.Message">
@@ -58,6 +63,15 @@
       </if>
       <if test="sendTime != null">
         send_time,
+      </if>
+      <if test="isCancel != null">
+        is_cancel,
+      </if>
+      <if test="cancelTime != null">
+        cancel_time,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
       </if>
       <if test="content != null">
         content,
@@ -82,6 +96,15 @@
       <if test="sendTime != null">
         #{sendTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="isCancel != null">
+        #{isCancel,jdbcType=TINYINT},
+      </if>
+      <if test="cancelTime != null">
+        #{cancelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=TINYINT},
+      </if>
       <if test="content != null">
         #{content,jdbcType=LONGVARCHAR},
       </if>
@@ -105,6 +128,15 @@
       <if test="sendTime != null">
         send_time = #{sendTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="isCancel != null">
+        is_cancel = #{isCancel,jdbcType=TINYINT},
+      </if>
+      <if test="cancelTime != null">
+        cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
       <if test="content != null">
         content = #{content,jdbcType=LONGVARCHAR},
       </if>
@@ -118,6 +150,9 @@
       target = #{target,jdbcType=INTEGER},
       sender = #{sender,jdbcType=INTEGER},
       send_time = #{sendTime,jdbcType=TIMESTAMP},
+      is_cancel = #{isCancel,jdbcType=TINYINT},
+      cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=TINYINT},
       content = #{content,jdbcType=LONGVARCHAR}
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>
@@ -127,7 +162,10 @@
       type = #{type,jdbcType=TINYINT},
       target = #{target,jdbcType=INTEGER},
       sender = #{sender,jdbcType=INTEGER},
-      send_time = #{sendTime,jdbcType=TIMESTAMP}
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      is_cancel = #{isCancel,jdbcType=TINYINT},
+      cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=TINYINT}
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>
 </mapper>

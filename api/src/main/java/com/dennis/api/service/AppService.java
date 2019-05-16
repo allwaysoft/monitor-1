@@ -10,11 +10,11 @@ import java.util.Map;
 public interface AppService {
 
 
-    Result add(Map params);
+    Result info(Integer appId);
+
+    Result edit(Map params);
 
     Result list(Map params);
-
-    Result update(Map params);
 
     Result delete(Integer appId);
 

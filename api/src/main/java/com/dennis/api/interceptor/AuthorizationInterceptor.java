@@ -9,6 +9,7 @@ import com.dennis.common.constants.ApiConstant;
 import com.dennis.common.constants.UserConstant;
 import com.dennis.common.tools.JWTUtils;
 import com.dennis.common.tools.MapUtil;
+import com.dennis.common.tools.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
 import java.util.Map;
 
 /**
@@ -51,7 +51,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         //从header中得到token
         String authorization = request.getHeader(ApiConstant.AUTHORIZATION);
 
-        if (authorization == null) {
+        if (StringUtil.isEmpty(authorization)) {
             throw new AccessDeniedException();
         }
 

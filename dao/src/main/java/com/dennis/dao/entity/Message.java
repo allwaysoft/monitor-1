@@ -34,6 +34,21 @@ public class Message {
     private Date sendTime;
 
     /**
+     * 是否撤销 0：否  1：是 is_cancel
+     */
+    private Integer isCancel;
+
+    /**
+     * 撤销时间 cancel_time
+     */
+    private Date cancelTime;
+
+    /**
+     * 是否删除 0：否 1：是 is_delete
+     */
+    private Integer isDelete;
+
+    /**
      * 消息内容 content
      */
     private String content;
@@ -147,6 +162,60 @@ public class Message {
     }
 
     /**
+     * 是否撤销 0：否  1：是
+     * @author Dennis
+     * @return is_cancel 是否撤销 0：否  1：是
+     */
+    public Integer getIsCancel() {
+        return isCancel;
+    }
+
+    /**
+     * 是否撤销 0：否  1：是
+     * @author Dennis
+     * @param isCancel 是否撤销 0：否  1：是
+     */
+    public void setIsCancel(Integer isCancel) {
+        this.isCancel = isCancel;
+    }
+
+    /**
+     * 撤销时间
+     * @author Dennis
+     * @return cancel_time 撤销时间
+     */
+    public Date getCancelTime() {
+        return cancelTime;
+    }
+
+    /**
+     * 撤销时间
+     * @author Dennis
+     * @param cancelTime 撤销时间
+     */
+    public void setCancelTime(Date cancelTime) {
+        this.cancelTime = cancelTime;
+    }
+
+    /**
+     * 是否删除 0：否 1：是
+     * @author Dennis
+     * @return is_delete 是否删除 0：否 1：是
+     */
+    public Integer getIsDelete() {
+        return isDelete;
+    }
+
+    /**
+     * 是否删除 0：否 1：是
+     * @author Dennis
+     * @param isDelete 是否删除 0：否 1：是
+     */
+    public void setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    /**
      * 消息内容
      * @author Dennis
      * @return content 消息内容
@@ -166,7 +235,7 @@ public class Message {
 
     /**
      *
-     * @mbg.generated 2019-03-31 17:25:47
+     * @mbg.generated 2019-05-16 00:00:59
      */
     @Override
     public String toString() {
@@ -180,6 +249,9 @@ public class Message {
         sb.append(", target=").append(target);
         sb.append(", sender=").append(sender);
         sb.append(", sendTime=").append(sendTime);
+        sb.append(", isCancel=").append(isCancel);
+        sb.append(", cancelTime=").append(cancelTime);
+        sb.append(", isDelete=").append(isDelete);
         sb.append(", content=").append(content);
         sb.append("]");
         return sb.toString();

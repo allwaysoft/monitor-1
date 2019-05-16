@@ -1,6 +1,9 @@
 package com.dennis.api.service.impl;
 
+import com.dennis.api.async.SSHAsync;
 import com.dennis.api.service.AppService;
+import com.dennis.api.ssh.SSHTemplate;
+import com.dennis.api.websocket.WebSocket;
 import com.dennis.common.enums.ResultEnum;
 import com.dennis.common.result.Result;
 import com.dennis.common.result.ResultUtil;
@@ -30,33 +33,51 @@ public class AppServiceImpl implements AppService {
     private AppMapper appMapper;
 
     @Autowired
+    private WebSocket webSocket;
+
+    @Autowired
     private ServerMapper serverMapper;
+
+    @Autowired
+    private SSHAsync sshAsync;
 
 
     @Override
+    public Result info(Integer appId) {
+        Map info = appMapper.selectInfoByPrimaryKey(appId);
+        return ResultUtil.success(ResultEnum.REQUEST_SUCCESS.getMsg(), info);
+    }
+
+    @Override
     @Transactional
-    public Result add(Map params) {
+    public Result edit(Map params) {
 
-        App app = new App();
+
+        App app = null;
+
+        if (params.containsKey("pkId")) {
+            app = appMapper.selectByPrimaryKey(MapUtil.getInt(params, "pkId"));
+        } else {
+            app = new App();
+            app.setIsDelete(0);
+            app.setCreateTime(DateUtil.getCurrentDate());
+            app.setIsMonitor(0);
+        }
+
         app.setServerId(MapUtil.getInt(params, "serverId"));
-        app.setNickname(MapUtil.getString(params,"nickname"));
+        app.setNickname(MapUtil.getString(params, "logName"));
         app.setPath(MapUtil.getString(params, "path"));
-        app.setRegex(MapUtil.getString(params, "regex"));
-        app.setIsDelete(0);
-        app.setCreateTime(DateUtil.getCurrentDate());
-        app.setIsMonitor(0);
 
-        appMapper.insertSelective(app);
+        if (params.containsKey("pkId"))
+            appMapper.updateByPrimaryKeySelective(app);
+        else
+            appMapper.insertSelective(app);
+
         return ResultUtil.success(ResultEnum.REQUEST_SUCCESS.getMsg());
     }
 
     @Override
     public Result list(Map params) {
-
-        Integer serverId = MapUtil.getInt(params, "serverId");
-        Server server = serverMapper.selectByPrimaryKey(serverId);
-        if (server == null)
-            return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
 
         List<App> apps = appMapper.selectByServerId(params);
         Integer total = appMapper.selectByServerCount(params);
@@ -64,24 +85,6 @@ public class AppServiceImpl implements AppService {
         return ResultUtil.success(ResultEnum.REQUEST_SUCCESS.getMsg(), MapUtil.pageMap(apps, total));
     }
 
-    @Override
-    public Result update(Map params) {
-
-        App app = appMapper.selectByPrimaryKey(MapUtil.getInt(params, "appId"));
-
-        if (params.containsKey("serverId"))
-            app.setServerId(MapUtil.getInt(params, "serverId"));
-        if (params.containsKey("nickname"))
-            app.setNickname(MapUtil.getString(params,"nickname"));
-        if (params.containsKey("path"))
-            app.setPath(MapUtil.getString(params,"path"));
-        if (params.containsKey("regex"))
-            app.setRegex(MapUtil.getString(params,"regex"));
-
-        appMapper.updateByPrimaryKeySelective(app);
-
-        return ResultUtil.success(ResultEnum.UPDATE_SUCCESS.getMsg());
-    }
 
     @Override
     public Result delete(Integer appId) {
@@ -98,9 +101,15 @@ public class AppServiceImpl implements AppService {
     public Result monitor(Integer appId) {
 
         App app = appMapper.selectByPrimaryKey(appId);
-        app.setIsMonitor(1);
-        appMapper.updateByPrimaryKeySelective(app);
+        if (app != null) {
 
-        return ResultUtil.success(ResultEnum.REQUEST_SUCCESS.getMsg());
+            Server server = serverMapper.selectByPrimaryKey(app.getServerId());
+            if (server != null) {
+                sshAsync.execTail(app, server, webSocket);
+                return ResultUtil.success(ResultEnum.REQUEST_SUCCESS);
+            }
+        }
+
+        return ResultUtil.error(ResultEnum.PATH_ERROR);
     }
 }

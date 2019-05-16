@@ -11,10 +11,7 @@ import com.dennis.common.tools.MapUtil;
 import com.dennis.common.tools.RequestUtils;
 import com.dennis.common.tools.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -32,7 +29,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
 
     /**
      * 发送验证码
@@ -53,7 +49,7 @@ public class UserController {
             }
         }
 
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
 
@@ -75,12 +71,13 @@ public class UserController {
                 return userService.register(params);
             }
         }
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
 
     /**
      * 登录 -- 账户密码 登录
+     *
      * @param account
      * @param password
      * @return
@@ -93,26 +90,39 @@ public class UserController {
             return userService.login(account, password);
         }
 
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
 
-    /**
-     * 登录 -- 手机号验证码 登录
-     *
-     * @param account
-     * @param code
-     * @return
-     */
-    @RequestMapping(value = "/loginForCode.action", method = RequestMethod.POST)
-    public Result loginCheckCode(@RequestParam(value = "account") String account,
-                                 @RequestParam(value = "code") String code) {
-        if (!StringUtil.isEmpty(account) && !StringUtil.isEmpty(code)) {
-            return userService.loginForCode(account, code);
+    @Authorization
+    @RequestMapping(value = "/info.action", method = RequestMethod.POST)
+    public Result info() {
+        return userService.info();
+    }
+
+
+    @Authorization
+    @RequestMapping(value = "/noticeInfo.action", method = RequestMethod.POST)
+    public Result noticeInfo() {
+        return userService.noticeInfo();
+    }
+
+    @Authorization
+    @RequestMapping(value = "/updateNotice.action", method = RequestMethod.POST)
+    public Result updateNotice(@RequestParam Map params) {
+
+        if (MapUtil.containsKeys(params, "isNotice", "email")) {
+            return userService.updateNotice(params);
         }
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
 
+    @Authorization
+    @RequestMapping(value = "/logout.action", method = RequestMethod.POST)
+    public Result logout() {
+        return userService.logout();
+    }
 
     /**
      * 忘记密码 -- 修改密码
@@ -131,25 +141,44 @@ public class UserController {
             return userService.updatePassword(account, code, password);
         }
 
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
-
 
 
     /**
-     * 修改头像
-     * @param avatar
+     * 重置密码
+     *
+     * @param params
      * @return
      */
     @Authorization
-    @RequestMapping(value = "/updateAvatar.action", method = RequestMethod.POST)
-    public Result updateAvatar(@RequestParam(value = "avatar") String avatar) {
+    @RequestMapping(value = "/resetPassword.action", method = RequestMethod.POST)
+    public Result resetPassword(@RequestParam Map params) {
 
-        if (!StringUtil.isEmpty(avatar)) {
-            return userService.updateAvatar(avatar);
+        if (MapUtil.containsKeys(params, "oldPass", "newPass")) {
+            if (MapUtil.isNotEmptyStringValues(params, "oldPass", "newPass")){
+                return userService.resetPassword(MapUtil.getString(params, "oldPass"), MapUtil.getString(params, "newPass"));
+            }
         }
 
-        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT.getMsg());
+        return ResultUtil.error(ResultEnum.ILLEGAL_ARGUMENT);
     }
+
+
+    /**
+     * 修改个人资料
+     * userId -- 用户ID
+     * nickname -- 昵称
+     * sex -- 性别
+     *
+     * @param params
+     * @return
+     */
+    @Authorization
+    @RequestMapping(value = "/updateInfo.action", method = RequestMethod.POST)
+    public Result updateInfo(@RequestParam Map params) {
+        return userService.update(params);
+    }
+
 
 }

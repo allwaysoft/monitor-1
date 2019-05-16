@@ -7,7 +7,7 @@ public enum ResultEnum {
 
     TOKEN_EXPIRE(-1, "认证失效"),
     USER_BAN(-2, "您的账户已被封禁"),
-    ACCESS_DENIED(-3, "连接失败"),
+    ACCESS_DENIED(-1, "连接失败"),
 
 
     ERROR(1, "fail"),
@@ -30,6 +30,9 @@ public enum ResultEnum {
 
     UNKNOW_ERROR(100000, "未知异常"),
     ILLEGAL_ARGUMENT(100001, "参数无效"),
+    PATH_ERROR(100001, "日志文件路径错误"),
+
+
 
     METHOD_NOT_ALLOW(405, "方法不允许访问"),
     PAGE_NOT_FOUND(404, "页面找不到"),
@@ -39,6 +42,7 @@ public enum ResultEnum {
     USER_NOT_FOUND(200001, "用户不存在"),
     USER_PASSWORD_NOT_MATCH(200002, "账户或密码错误!"),
     ACCOUNT_EXIST(200003, "账户已存在"),
+    CURRENT_PASSWORD_NOT_MATCH(200002, "当前密码不正确!"),
     MOBIILE_EXIST(200004, "该手机号已注册"),
     VERIFICATION_CODE_ERROR(200006, "验证码错误"),
     INVALID_ACCOUNT(200006, "无效手机号");

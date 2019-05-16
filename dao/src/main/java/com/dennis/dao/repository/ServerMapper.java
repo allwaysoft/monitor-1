@@ -1,6 +1,7 @@
 package com.dennis.dao.repository;
 
 import com.dennis.dao.entity.Server;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 import java.util.Map;
@@ -51,4 +52,9 @@ public interface ServerMapper {
 
 
     List<Server> selectByHost(String host);
+
+
+    @Select("select pk_id as pkId,host,username,nickname from t_server where user_id=#{userId} and is_delete=0")
+    List<Map> selectMonitorListByUser(Integer userId);
+
 }

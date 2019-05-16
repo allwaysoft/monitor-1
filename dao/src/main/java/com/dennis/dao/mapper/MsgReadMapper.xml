@@ -5,9 +5,10 @@
     <id column="pk_id" jdbcType="INTEGER" property="pkId" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="msg_id" jdbcType="INTEGER" property="msgId" />
+    <result column="read_time" jdbcType="TIMESTAMP" property="readTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    pk_id, user_id, msg_id
+    pk_id, user_id, msg_id, read_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -20,10 +21,10 @@
     where pk_id = #{pkId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.dennis.dao.entity.MsgRead">
-    insert into t_msg_read (pk_id, user_id, msg_id
-      )
-    values (#{pkId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{msgId,jdbcType=INTEGER}
-      )
+    insert into t_msg_read (pk_id, user_id, msg_id, 
+      read_time)
+    values (#{pkId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{msgId,jdbcType=INTEGER}, 
+      #{readTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.dennis.dao.entity.MsgRead">
     insert into t_msg_read
@@ -37,6 +38,9 @@
       <if test="msgId != null">
         msg_id,
       </if>
+      <if test="readTime != null">
+        read_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="pkId != null">
@@ -47,6 +51,9 @@
       </if>
       <if test="msgId != null">
         #{msgId,jdbcType=INTEGER},
+      </if>
+      <if test="readTime != null">
+        #{readTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -59,13 +66,17 @@
       <if test="msgId != null">
         msg_id = #{msgId,jdbcType=INTEGER},
       </if>
+      <if test="readTime != null">
+        read_time = #{readTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dennis.dao.entity.MsgRead">
     update t_msg_read
     set user_id = #{userId,jdbcType=INTEGER},
-      msg_id = #{msgId,jdbcType=INTEGER}
+      msg_id = #{msgId,jdbcType=INTEGER},
+      read_time = #{readTime,jdbcType=TIMESTAMP}
     where pk_id = #{pkId,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -1,5 +1,6 @@
 package com.dennis.api.ssh;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,19 +24,33 @@ public class ServerUtil {
     public static void memoryFormat(Map result, String str){
         String[] args = str.split(",");
         Map memory = new HashMap();
-        memory.put("total", args[1]);
-        memory.put("used",args[2]);
+
+        float total = Float.valueOf(args[1]);
+        float used = Float.valueOf(args[2]);
+        DecimalFormat df = new DecimalFormat("0.0");
+
+        memory.put("total", args[1] + " MB");
+        memory.put("used",args[2] + " MB");
+        memory.put("percentage", Double.valueOf(df.format(used/total*100)));
         result.put("memory",memory);
     }
 
     public static void diskFormat(Map result, String str){
         String[] args = str.trim().split(" ");
         Map memory = new HashMap();
-        memory.put("total", displayFileSize(Long.valueOf(args[1])));
-        memory.put("used",displayFileSize(Long.valueOf(args[0])));
+
+        DecimalFormat df = new DecimalFormat("0.0");
+        Long total = Long.valueOf(args[1]);
+        Long used = Long.valueOf(args[0]);
+
+        memory.put("totalKb", total);
+        memory.put("usedKb", used);
+        memory.put("total", displayFileSize(total));
+        memory.put("used",displayFileSize(used));
+        memory.put("percentage", Double.valueOf(df.format((float)used/(float)total*100)));
+
         result.put("disk",memory);
     }
-
 
 
     private static String displayFileSize(long size) {

@@ -10,9 +10,11 @@ import java.util.Map;
 public interface ServerService {
 
 
-    Result add(Map params);
+    Result save(Map params);
 
     Result testConnect(Map params);
+
+    Result date(Integer serverId);
 
     Result status(Integer serverId);
 
@@ -22,8 +24,11 @@ public interface ServerService {
 
     Result list(Map params);
 
+    Result selectList();
+
+
     Result delete(Integer serverId);
 
-    Result update(Map params);
+
 
 }

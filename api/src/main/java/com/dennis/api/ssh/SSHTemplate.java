@@ -1,13 +1,12 @@
 package com.dennis.api.ssh;
 
+import com.dennis.api.websocket.WebSocket;
 import com.dennis.common.constants.CommandConstant;
 import com.dennis.common.tools.MapUtil;
 import com.dennis.dao.entity.Server;
 import com.jcraft.jsch.*;
-import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.*;
-import java.text.NumberFormat;
 import java.util.*;
 
 /**
@@ -157,7 +156,7 @@ public class SSHTemplate {
      * @param command
      * @return
      */
-    public static void execWait(Server server, String command) {
+    public static void executePrint(Server server, String command, WebSocket webSocket, String code) {
 
         Session session = getSession(server);
 
@@ -166,33 +165,40 @@ public class SSHTemplate {
 
         try {
 
-            exec = (ChannelExec) session.openChannel("exec");
-            InputStream in = exec.getInputStream();
-            exec.setCommand(command);
-            exec.connect();
+            ChannelExec channel =  (ChannelExec) session.openChannel("exec");
+            InputStream in = channel.getInputStream();
+            channel.setCommand(command);
+            channel.connect();
 
             byte[] tmp = new byte[1024];
             while (true) {
-
                 while (in.available() > 0) {
                     int i = in.read(tmp, 0, 1024);
                     if (i < 0)
                         break;
-                    String str = new String(tmp, 0, i);
-                    System.out.println(str);
+
+                    String line = new String(tmp, 0, i);
+                    line = line.replaceAll("\\n","<br/>");
+
+                    // 判断 socket 连接是否还存在， 如果不存在，关闭 ssh 连接。
+                    if (webSocket.isExists(code)){
+                        webSocket.sendOneMessage(code,line);
+                    }else {
+                        close(session,exec);
+                    }
                 }
-                if (exec.isClosed()) {
+                if (channel.isClosed()) {
                     if (in.available() > 0)
                         continue;
                     break;
                 }
             }
-
         } catch (JSchException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            System.out.println("========== Tail SSH Session Close ==========");
             close(session,exec);
         }
     }

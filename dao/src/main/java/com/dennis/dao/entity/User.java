@@ -39,6 +39,11 @@ public class User {
     private String email;
 
     /**
+     * 是否开启异常通知到邮箱   0：否 1：是 is_email
+     */
+    private Integer isEmail;
+
+    /**
      * 是否启用  0：是 1：否 is_enable
      */
     private Integer isEnable;
@@ -190,6 +195,24 @@ public class User {
     }
 
     /**
+     * 是否开启异常通知到邮箱   0：否 1：是
+     * @author Dennis
+     * @return is_email 是否开启异常通知到邮箱   0：否 1：是
+     */
+    public Integer getIsEmail() {
+        return isEmail;
+    }
+
+    /**
+     * 是否开启异常通知到邮箱   0：否 1：是
+     * @author Dennis
+     * @param isEmail 是否开启异常通知到邮箱   0：否 1：是
+     */
+    public void setIsEmail(Integer isEmail) {
+        this.isEmail = isEmail;
+    }
+
+    /**
      * 是否启用  0：是 1：否
      * @author Dennis
      * @return is_enable 是否启用  0：是 1：否
@@ -281,7 +304,7 @@ public class User {
 
     /**
      *
-     * @mbg.generated 2019-03-31 17:25:47
+     * @mbg.generated 2019-04-26 18:01:32
      */
     @Override
     public String toString() {
@@ -296,6 +319,7 @@ public class User {
         sb.append(", avatar=").append(avatar);
         sb.append(", nickname=").append(nickname);
         sb.append(", email=").append(email);
+        sb.append(", isEmail=").append(isEmail);
         sb.append(", isEnable=").append(isEnable);
         sb.append(", isDelete=").append(isDelete);
         sb.append(", lastLogin=").append(lastLogin);
